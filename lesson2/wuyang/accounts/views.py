@@ -70,12 +70,29 @@ class LoginRequiredMixin(object):
         return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
 
 
-# 作业 用户登陆与退出使用TemplateView与View去实现
-
+# 作业 1 用户登陆与退出使用TemplateView与View去实现
+# 用View实现登录
 class LoginView(View):
     def get(self,request,*args,**kwargs):
         return render(request, "public/login.html")
 
-
+    def post(self,request,*args,**kwargs):
+        username = request.POST.get("username", "")
+        userpass = request.POST.get("password", "")
+        user = authenticate(username=username, password=userpass)
+        print(user)
+        ret = {"status":0, "errmsg":""}
+        if user:
+            login(request, user)
+            ret['next_url'] = request.GET.get("next") if request.GET.get("next", None) else "/"
+        else:
+            ret['status'] = 1
+            ret['errmsg'] = "用户名或密码错误，请联系管理员"
+        return JsonResponse(ret)
+# 用View实现退出
+class LoginOut(View):
+    def get(self,request,*args,**kwargs):
+        logout(request)
+        return HttpResponseRedirect(reverse("user_login"))
 
 
