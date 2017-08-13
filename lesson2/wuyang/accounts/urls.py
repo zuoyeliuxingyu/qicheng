@@ -11,5 +11,6 @@ urlpatterns = [
 
     #url(r'^user/list/$', views.UserListView.as_view(), name="user_list"),
 
-    url(r'^user/list/$', user.UserListView.as_view(), name="user_list"),
+    #url(r'^user/list/$', user.UserListView.as_view(), name="user_list"),
+    url(r'^user/list/$', views.UserListTemplateView.as_view(), name="user_list"),
 ]

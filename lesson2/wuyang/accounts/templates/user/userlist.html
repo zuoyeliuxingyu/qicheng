@@ -22,9 +22,12 @@
             <li><a href="{% url 'user_list' %}?page=1">首页</a></li>
             {% if page_obj.has_previous %}
                 <li><a href="{% url 'user_list' %}?page={{ page_obj.previous_page_number }}">上一页</a></li>
+            {% else %}
+                <li  class="disabled"><a href="#">上一页</a></li>
             {% endif %}
 
-            {% for p in page_obj.paginator.page_range %}
+
+            {% for p in page_range %}
                 {% if p == page_obj.number %}
                     <li class="active"><a href="{% url 'user_list' %}?page={{ p }}">{{ p }}</a></li>
                 {% else %}
@@ -34,9 +37,11 @@
 
             {% if page_obj.has_next %}
                 <li><a href="{% url 'user_list' %}?page={{ page_obj.next_page_number }}">下一页</a></li>
+             {% else %}
+                <li  class="disabled"><a href="#">下一页</a></li>
             {% endif %}
 
-            <li><a href="{% url 'user_list' %}?page={{ page_obj.paginator.num_pages }}">首页</a></li>
+            <li><a href="{% url 'user_list' %}?page={{ page_obj.paginator.num_pages }}">尾页</a></li>
         </ul>
         </center>
     </div>

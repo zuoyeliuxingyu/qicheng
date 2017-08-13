@@ -103,7 +103,7 @@ class LoginTemplateView(TemplateView):
     template_name = "public/login.html"
     def get(self, request, *args, **kwargs):
         return super(LoginTemplateView, self).get(request, *args, **kwargs)
-    
+
     def post(self,request,*args,**kwargs):
         username = request.POST.get("username", "")
         userpass = request.POST.get("password", "")
@@ -127,6 +127,43 @@ class LoginOutTemplateView(TemplateView):
         return HttpResponseRedirect(reverse("user_login"))
 
 
+# 作业2 分页的页码只显示15个记录， 显示当前页的前7个与后7个
+class UserListTemplateView(TemplateView):
+    template_name = "user/userlist.html"
+    per = 10
+    def get_context_data(self, **kwargs):
+        context = super(UserListTemplateView, self).get_context_data(**kwargs)
+        try:
+            page_num = int(self.request.GET.get("page", 1))
+        except:
+            page_num = 1
+        user_list = User.objects.all()
+        paginator = Paginator(user_list,self.per)
+
+        start_page_number = 1
+        end_page_number = 16
+        max_page_number=len(paginator.page_range)
+        if page_num > 7:
+            start_page_number=page_num - 7
+            end_page_number=page_num + 7
+
+        if end_page_number>max_page_number:
+            start_page_number=max_page_number-15
+            end_page_number=max_page_number
+
+        context["page_range"] = range(start_page_number,end_page_number)
+        context["page_obj"] = paginator.page(page_num)
+        context["object_list"] = context["page_obj"].object_list
+
+
+
+
+
+        return context
+
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        return super(UserListTemplateView, self).get(request, *args, **kwargs)
 
 
 
