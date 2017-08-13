@@ -89,10 +89,48 @@ class LoginView(View):
             ret['status'] = 1
             ret['errmsg'] = "用户名或密码错误，请联系管理员"
         return JsonResponse(ret)
+
+
 # 用View实现退出
 class LoginOut(View):
     def get(self,request,*args,**kwargs):
         logout(request)
         return HttpResponseRedirect(reverse("user_login"))
+
+
+# 用TemplateView 实现用户登录
+class LoginTemplateView(TemplateView):
+    template_name = "public/login.html"
+    def get(self, request, *args, **kwargs):
+        return super(LoginTemplateView, self).get(request, *args, **kwargs)
+    
+    def post(self,request,*args,**kwargs):
+        username = request.POST.get("username", "")
+        userpass = request.POST.get("password", "")
+        user = authenticate(username=username, password=userpass)
+        print(user)
+        ret = {"status":0, "errmsg":""}
+        if user:
+            login(request, user)
+            ret['next_url'] = request.GET.get("next") if request.GET.get("next", None) else "/"
+        else:
+            ret['status'] = 1
+            ret['errmsg'] = "用户名或密码错误，请联系管理员"
+        return JsonResponse(ret)
+
+
+# 用templateView 实现用户退出
+class LoginOutTemplateView(TemplateView):
+    template_name = "public/login.html"
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return HttpResponseRedirect(reverse("user_login"))
+
+
+
+
+
+
+
 
 
