@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
 
 
-########################### 函数视图 #################################
+######################################################## 函数视图
 #def login_view(request):
 #    if request.method == 'POST':
 #        username = request.POST.get('username',"")
@@ -41,7 +41,7 @@ from django.utils.decorators import method_decorator
 #    return render(request, 'user/userlist.html', {"user_list": user_queryset})
 
 
-######################################################## 类视图 # View 模板
+######################################################## 类视图 # View 模板 # 登录，登出
 
 #class LoginView(View):
 #
@@ -71,7 +71,7 @@ from django.utils.decorators import method_decorator
 #        logout(self.request)
 #        return HttpResponseRedirect(reverse("user_login"))
 
-######################################################## 类视图 # TemplateView 模板
+######################################################## 类视图 # TemplateView 模板 # 登录，登出
 
 class LoginView(TemplateView):
     template_name = "public/login.html"
@@ -104,7 +104,7 @@ class LogoutView(TemplateView):
         return HttpResponseRedirect(reverse("user_login"))
 
 
-######################################################## 类视图 # View/ TemplateView
+######################################################## 类视图 # View/ TemplateView # 用户列表
 
 #class User_ListView(View):
 #
