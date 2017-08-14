@@ -1,172 +1,187 @@
-# coding:utf8
-
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.views.generic.base import View, TemplateView
+from django.views.generic import View, TemplateView
 from django.core.paginator import Paginator
 
-# 登录验证方式 1
-from django.contrib.auth.decorators import login_required, permission_required
-# 登录验证方式 2
+# 类视图登录验证
 from django.utils.decorators import method_decorator
 
-# Create your views here.
 
-
-####################################################################   函数视图
+########################### 函数视图 #################################
 #def login_view(request):
-#
-#    if request.method == "POST":
-#
+#    if request.method == 'POST':
+#        username = request.POST.get('username',"")
+#        userpass = request.POST.get('userpass',"")
 #        ret = {
 #            "status":0,
 #            "errmsg":"",
 #        }
-#        username = request.POST.get('username', "")
-#        userpass = request.POST.get('userpass', "")
-#
-#        user = authenticate(username=username, password=userpass)
-#        if user:
+#        # 验证用户，用户或密码错误验证为空；新版本中用户被禁用，认证结果也会为空
+#        user = authenticate(username=username, password=userpass) 
+#        if user: 
 #            login(request, user)
-#            ret["next_url"] = request.GET.get("next") if request.GET.get("next", "") else "/"
+#            ret["next_url"] = request.GET.get("next") if request.GET.get('next', None) else "/"
 #        else:
 #            ret["status"] = 1
-#            ret["errmsg"] = "Login Fails!!!"
+#            ret["errmsg"] = "User don't exist or Password is Wrong or User disabled!!!"
 #        return JsonResponse(ret)
 #    else:
 #        return render(request, "public/login.html")
-#
+#    
 #def logout_view(request):
 #    logout(request)
 #    return HttpResponseRedirect(reverse("user_login"))
+#
+#def user_list_view(request):
+#    user_queryset = User.objects.all() 
+#    return render(request, 'user/userlist.html', {"user_list": user_queryset})
 
-####################################################################   login/logout 使用 View 模板
+
+######################################################## 类视图 # View 模板
 
 #class LoginView(View):
 #
 #    def get(self, request, *args, **kwargs):
 #        return render(request, "public/login.html")
-#       
-#    def post(self, *args, **kwargs): 
+#
+#    def post(self, request, *args, **kwargs):
+#        username = request.POST.get('username',"")
+#        userpass = request.POST.get('userpass',"")
 #        ret = {
 #            "status":0,
 #            "errmsg":"",
 #        }
-#        username = request.POST.get('username', "")
-#        userpass = request.POST.get('userpass', "")
-#
+#        # 验证用户，用户或密码错误验证为空；新版本中用户被禁用，认证结果也会为空
 #        user = authenticate(username=username, password=userpass)
 #        if user:
-#            login(self.request, user)
-#            ret["next_url"] = request.GET.get("next") if request.GET.get("next", "") else "/"
+#            login(request, user)
+#            ret["next_url"] = request.GET.get("next") if request.GET.get('next', None) else "/"
 #        else:
 #            ret["status"] = 1
-#            ret["errmsg"] = "Login Fails!!!"
+#            ret["errmsg"] = "User don't exist or Password is Wrong or User disabled!!!"
 #        return JsonResponse(ret)
 
 #class LogoutView(View):
-#    def get(self, request, *args, **kwargs):
-#        logout(request)
-#        return HttpResponseRedirect(reverse("user_login"))
 #
-####################################################################   login/logout 使用 TemplateView 模板
+#    def get(self, request, *args, **kwargs):
+#        logout(self.request)
+#        return HttpResponseRedirect(reverse("user_login"))
+
+######################################################## 类视图 # TemplateView 模板
 
 class LoginView(TemplateView):
-
     template_name = "public/login.html"
-
-    @method_decorator(login_required)
+    
     def get(self, request, *args, **kwargs):
-       return super(LoginView, self).get(request, *args, **kwargs)
+        return super(LoginView, self).get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
-        #context = super(LoginView, self).post(request, *args, **kwargs)
         ret = {
             "status":0,
             "errmsg":"",
         }
         if request.method == "POST":
-            username = request.POST.get('username', "")
-            userpass = request.POST.get('userpass', "")
-
+            username = request.POST.get('username',"")
+            userpass = request.POST.get('userpass',"")
             user = authenticate(username=username, password=userpass)
+
             if user:
                 login(request, user)
-                ret["next_url"] = request.GET.get("next") if request.GET.get("next", "") else "/"
+                ret["next_url"] = request.GET.get("next") if request.GET.get('next', None) else "/"
             else:
                 ret["status"] = 1
                 ret["errmsg"] = "Login Fails!!!"
-
             return JsonResponse(ret)
-
-
-class LogoutView(TemplateView): 
+        
+class LogoutView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         logout(request)
         return HttpResponseRedirect(reverse("user_login"))
 
 
-####################################################################   分页 ，每页显示15个分页标签
- 
+######################################################## 类视图 # View/ TemplateView
 
-# 使用View 模板展现用户列表
-#class UserListView(View):
-#    def get(self, *args, **kwargs):
-#        user_list = User.objects.all()
-#        return render(self.request, "user/userlist.html", {"userlist":user_list})
+#class User_ListView(View):
+#
+#    @method_decorator(login_required)
+#    def get(self, request, *args, **kwargs):
+#        user_queryset = User.objects.all()
+#        return render(request, 'user/userlist.html', {"user_list": user_queryset}) 
 
 
-# 使用TemplateView 模板展现用户列表
+#class UserListView(TemplateView):
+#
+#    # TemplateView 继承了 TemplateResponseMixin，template_name 就是TemplateResponseMixin 里的属性
+#    template_name = "user/userlist.html"
+#
+#    per = 10
+#
+#    def get_context_data(self, **kwargs):
+#        context = super(UserListView, self).get_context_data(**kwargs)
+#        try:
+#            page_num = int(self.request.GET.get('page',1))
+#        except:
+#            page_num = 1
+#
+#        end_num = page_num * self.per
+#        start_num = end_num - self.per
+#
+#        context["user_list"] = User.objects.all()[start_num:end_num]
+#        return context
+
+
 class UserListView(TemplateView):
-    template_name = "user/userlist.html"
-    per = 5
-    before_num = 7 
-    after_num = 7 
 
+    template_name = "user/userlist.html"
+    per = 3
+    before_page = 7 
+    after_page = 7 
+    
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
         try:
-            page_num = int(self.request.GET.get("page", 1))
+            page_num = int(self.request.GET.get('page',1))
         except:
             page_num = 1
 
-        userlist = User.objects.all()
-        paginator = Paginator(userlist, self.per)
-        nonce_page = paginator.page(page_num)
-
-        #count_page = paginator.num_pages  
-
-        if nonce_page.number - self.before_num <= 0:
-            self.before_num = 0
+        user_list = User.objects.all()
+        paginator = Paginator(user_list, self.per)
+        
+        nonce_page = paginator.page(page_num).number
+        
+        if nonce_page - self.before_page <= 0:
+            self.before_page = 1
         else:
-            self.before_num = nonce_page.number - self.before_num
+            self.before_page = nonce_page - self.before_page
 
-        if nonce_page.number + self.before_num >= paginator.num_pages:
-            self.after_num = paginator.num_pages
+        if nonce_page + self.after_page >= paginator.num_pages:
+            self.after_page = paginator.num_pages
+        elif nonce_page + self.after_page < 15:
+            self.after_page = 15
         else:
-            self.after_num = nonce_page.number + self.after_num
+            self.after_page = nonce_page + self.after_page
 
-        #print(range(self.before_num,self.after_num))
 
-        context["page_range"]=range(self.before_num+1,self.after_num+1) 
-        context["page_obj"] = paginator.page(page_num)
-        context["object_list"] = context["page_obj"].object_list
+        context['page_range'] = range(self.before_page,self.after_page+1)
+        context['page_obj'] = paginator.page(page_num)
+        context['object_list'] = context['page_obj'].object_list
 
         return context
-
+        
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-       return super(UserListView, self).get(request, *args, **kwargs)
+        return super(UserListView, self).get(request, *args, **kwargs)
 
 
-####################################################################   django 1.11.x 登录验证方式 3
+######################################################## 类视图 # 登录验证
 
 #class LoginRequiredMixin(object):
 #    def dispatch(self, request, *args, **kwargs):
 #        if not request.user.is_authentircated():
-#            return HttpResponseRedirect(reverse("user_login")) 
+#            return HttpResponseRedirect(reverse("user_login"))
 #        return super(LoginRequiredMixin, self).dispatch(request, *args, **kwargs)
