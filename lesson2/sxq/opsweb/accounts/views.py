@@ -84,18 +84,18 @@ class LoginView(TemplateView):
             "status":0,
             "errmsg":"",
         }
-        if request.method == "POST":
-            username = request.POST.get('username',"")
-            userpass = request.POST.get('userpass',"")
-            user = authenticate(username=username, password=userpass)
+        #if request.method == "POST":
+        username = request.POST.get('username',"")
+        userpass = request.POST.get('userpass',"")
+        user = authenticate(username=username, password=userpass)
 
-            if user:
-                login(request, user)
-                ret["next_url"] = request.GET.get("next") if request.GET.get('next', None) else "/"
-            else:
-                ret["status"] = 1
-                ret["errmsg"] = "Login Fails!!!"
-            return JsonResponse(ret)
+        if user:
+            login(request, user)
+            ret["next_url"] = request.GET.get("next") if request.GET.get('next', None) else "/"
+        else:
+            ret["status"] = 1
+            ret["errmsg"] = "Login Fails!!!"
+        return JsonResponse(ret)
         
 class LogoutView(TemplateView):
 
