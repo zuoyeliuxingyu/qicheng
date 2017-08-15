@@ -1,0 +1,49 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>#</td>
+            <td>user</td>
+            <td>email</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for list in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ list.username }}</td>
+                <td>{{ list.email }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="container">
+    <ul class="pagination">
+        <li class=""><a href="{% url 'user_list' %}?page=1">first</a></li>
+
+        {% if page_obj.has_previous %}
+            <li class=""><a href="{% url 'user_list' %}?page={{ page_obj.previous_page_number }}" ><span aria-hidden="true">&laquo;</span></a></li>
+        {% else %}
+            <li class="disabled"><a href="" ><span aria-hidden="true">&laquo;</span></a></li>
+        {% endif %}
+
+        {% for cpage in page_rang %}
+            {% if cpage == page_obj.number %}
+                <li class="active"><a href="{% url 'user_list' %}?page={{ cpage }}">{{ cpage }}</a></li>
+            {% else %}
+                <li><a href="{% url 'user_list' %}?page={{ cpage }}">{{ cpage }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class=""><a href="{% url 'user_list' %}?page={{ page_obj.next_page_number }}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+        {% else %}
+            <li class="disabled"><a href="" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+        {% endif %}
+
+        <li><a href="{% url 'user_list' %}?page={{ page_obj.paginator.num_pages }}">last</a></li>
+    </ul>
+</div>
+{% endblock %}
