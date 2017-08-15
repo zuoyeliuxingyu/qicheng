@@ -38,7 +38,7 @@
                 <li class="disabled"><a>下一页</a></li>
             {% endif %}
             <li><a href="{% url 'user_list' %}?page={{ page_obj.paginator.num_pages }}">末页</a></li>
-            <li><a href="#">共{{ page_obj.paginator.num_pages }}页</a></li>
+            <li class="disabled"><a href="#">共{{ page_obj.paginator.num_pages }}页</a></li>
         </ul>
         </center>
     </div>
