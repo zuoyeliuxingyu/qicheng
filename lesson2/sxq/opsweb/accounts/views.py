@@ -156,6 +156,8 @@ class UserListView(TemplateView):
         
         if nonce_page - self.before_page <= 0:
             self.before_page = 1
+        elif nonce_page + self.before_page >= paginator.num_pages: 
+            self.before_page = paginator.num_pages - self.before_page - self.after_page
         else:
             self.before_page = nonce_page - self.before_page
 
