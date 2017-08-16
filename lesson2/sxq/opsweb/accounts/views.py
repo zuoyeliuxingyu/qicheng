@@ -9,7 +9,8 @@ from django.core.paginator import Paginator
 
 # 类视图登录验证
 from django.utils.decorators import method_decorator
-
+# django 新版验证方式
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 ######################################################## 函数视图
 #def login_view(request):
@@ -135,7 +136,7 @@ class LogoutView(TemplateView):
 #        return context
 
 
-class UserListView(TemplateView):
+class UserListView(LoginRequiredMixin, TemplateView):
 
     template_name = "user/userlist.html"
     per = 3
@@ -175,13 +176,12 @@ class UserListView(TemplateView):
 
         return context
         
-    @method_decorator(login_required)
-    def get(self, request, *args, **kwargs):
-        return super(UserListView, self).get(request, *args, **kwargs)
+#    @method_decorator(login_required)
+#    def get(self, request, *args, **kwargs):
+#        return super(UserListView, self).get(request, *args, **kwargs)
 
 
-######################################################## 类视图 # 登录验证
-
+######################################################## 类视图 # 登录验证 LoginRequiredMixin 方法示例
 #class LoginRequiredMixin(object):
 #    def dispatch(self, request, *args, **kwargs):
 #        if not request.user.is_authentircated():
