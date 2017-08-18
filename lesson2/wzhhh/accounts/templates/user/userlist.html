@@ -1,0 +1,62 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+    <table class="table table-striped">
+        <tr>
+            <th>rank</th>
+            <th>
+                用户名
+            </th>
+            <th>email</th>
+        </tr>
+        {% for user_obj in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user_obj.username }}</td>
+                <td>{{ user_obj.email }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <div align="center">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="inactive"><a href = "{% url 'user_list' %}?page=1">首页</a></li>
+            {% else %}
+                <li class="active"><a href ="{% url 'user_list' %}?page=1" onclick="return false;" style="cursor: default">首页</a></li>
+            {% endif %}
+
+            {% if page_obj.has_previous %}
+                <li class="inactive"><a href = "{% url 'user_list' %}?page={{ page_obj.previous_page_number }}">上一页</a></li>
+            {% else %}
+                <li class="inactive"><a href ="javascript:return false;" onclick="return false;" style="cursor: default;opacity: 0.5">上一页</a></li>
+            {% endif %}
+            {% if page_obj.number > front_edge %}
+                <li class="inactive"><a href ="javascript:return false;" onclick="return false;" style="cursor: default;opacity: 0.8">...</a></li>
+            {% endif %}
+
+            {% for p in page_range %}
+                {% if p == page_obj.number %}
+                    <li class="active"><a href = "{% url 'user_list' %}?page={{ p }}">{{ p }}</a></li>
+                {% else %}
+                    <li class="inactive"><a href = "{% url 'user_list' %}?page={{ p }}">{{ p }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.number < end_edge %}
+                <li class="inactive"><a href ="javascript:return false;" onclick="return false;" style="cursor: default;opacity: 0.8">...</a></li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <li class="inactive"><a href = "{% url 'user_list' %}?page={{ page_obj.next_page_number }}">下一页</a></li>
+            {% else %}
+                <li class="inactive"><a href ="javascript:return false;" onclick="return false;" style="cursor: default;opacity: 0.5">下一页</a></li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <li class="inactive"><a href = "{% url 'user_list' %}?page={{ page_obj.paginator.num_pages }}">末页</a></li>
+            {% else %}
+                <li class="active"><a href ="{% url 'user_list' %}?page={{ page_obj.paginator.num_pages }}" onclick="return false;" style="cursor: default;">末页</a></li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
