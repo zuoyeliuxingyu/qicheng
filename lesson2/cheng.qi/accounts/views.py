@@ -85,11 +85,6 @@ class UserListTemplateView(TemplateView):
         context["object_list"] = context["page_obj"].object_list
         return context
 
-    # @method_decorator(login_required)
-    # def get(self, request, *args, **kwargs):
-    #     return super(UserListView, self).get(request, *args, **kwargs)
-    #
-
 
 
 class LoginRequiredMixin(object):
