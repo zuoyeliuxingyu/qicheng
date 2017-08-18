@@ -75,15 +75,14 @@ class UserListTemplateView(TemplateView):
             start_page_number = page_num - 7
             end_page_number = page_num + 8
 
+# 当点击页是最后一页时，也显示15条数据#
         if end_page_number > max_page_number:
-#下一页显示始终为15条数据#
             start_page_number = max_page_number - 15
             end_page_number = max_page_number
 
         context["page_range"] = range(start_page_number, end_page_number)
         context["page_obj"] = paginator.page(page_num)
         context["object_list"] = context["page_obj"].object_list
-
         return context
 
     # @method_decorator(login_required)
