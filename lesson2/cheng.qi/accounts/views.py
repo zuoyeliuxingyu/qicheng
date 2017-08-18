@@ -67,8 +67,9 @@ class UserListTemplateView(TemplateView):
         user_list = User.objects.all()
         paginator = Paginator(user_list, self.per)
 
+# 定义用户列表首页为1，尾页为16，当前页+前7页+后7页为15【range（1，16）】#
         start_page_number = 1
-        end_page_number = 16
+        end_page_number = 15
         max_page_number = len(paginator.page_range)
 #当点击page_num页大于7页时，显示当前页的前7页和当前页的后7页
         if page_num > 7:
