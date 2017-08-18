@@ -13,7 +13,6 @@
                 <td>{{ user_obj.username }}</td>
                 <td>{{ user_obj.email }}</td>
             </tr>
-
         {% endfor %}
     </table>
     <div>
@@ -42,7 +41,6 @@
              {% else %}
                 <li  class="disabled"><a href="#">下一页</a></li>
             {% endif %}
-
             <li><a href="{% url 'user_list' %}?page={{ page_obj.paginator.num_pages }}">尾页</a></li>
         </ul>
         </center>
