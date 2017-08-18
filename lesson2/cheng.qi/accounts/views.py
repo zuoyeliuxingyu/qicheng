@@ -53,7 +53,7 @@ class User_ListView(View):
         user_queryset = User.objects.all()
         return render(request, "user/userlist.html", {"userlist": user_queryset})
 
-
+#通过TemplateView实现分页的页码只显示15个记录， 显示当前页的前7个与后7个#
 class UserListTemplateView(TemplateView):
     template_name = "user/userlist.html"
     per = 15
