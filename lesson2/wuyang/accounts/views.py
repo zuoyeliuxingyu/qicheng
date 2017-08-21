@@ -63,6 +63,9 @@ class UserListView(TemplateView):
     def get(self, request, *args, **kwargs):
         return super(UserListView, self).get(request, *args, **kwargs)
 
+
+
+
 class LoginRequiredMixin(object):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated():
