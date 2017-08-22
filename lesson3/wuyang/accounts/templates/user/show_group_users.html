@@ -1,0 +1,22 @@
+ <table  class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>用户名</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in user_list %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.is_active }}</td>
+                            <td><button type="button" class="btn btn-danger btn-sm del_group delete_group_user" groupname="{{ group_name }}" username="{{ user.username }}" onclick=delete_group_user(this)>删除</button></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+</table>
+
+

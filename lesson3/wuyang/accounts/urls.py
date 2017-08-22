@@ -20,5 +20,7 @@ urlpatterns = [
     url(r'^group/', include([
         url(r'^$', group.GroupListView.as_view(), name="group_list"),
         url(r'^create/$', group.GroupCreateView.as_view(), name="group_create"),
+        url(r'^show_users/$', group.GroupUserListView.as_view(), name="group_user_list"),
+        url(r'^delete_user/$',group.DelGroupUserView.as_view(),name="del_group_user")
     ])),
 ]

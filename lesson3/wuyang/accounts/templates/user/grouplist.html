@@ -15,7 +15,7 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{ group_obj.name }}</td>
                 <td>
-                    <a type="button" class="btn btn-primary btn-sm" href="" >成员列表</a>
+                    <a type="button" class="btn btn-primary btn-sm show_users_button" data="{{ group_obj.id }}" >成员列表</a>
                     <button type="button" class="btn btn-success btn-sm" >查看权限</button>
                     <a  class="btn btn-info btn-sm" href="#">修改权限</a>
                     <button type="button" class="btn btn-danger btn-sm del_group" groupid="{{ group.id }}">删除</button>
@@ -24,7 +24,7 @@
         {% endfor %}
     </table>
 
-
+<!--添加组的modal-->
 <div class="modal fade" id="create_group" aria-hidden="true">
 	<div class="modal-dialog">
 	    <div class="modal-content">
@@ -40,13 +40,33 @@
                 </div>
                 <button class="btn btn-primary" id="create_group_btn">提交</button>
             </div>
-            <div class="modal-footer">
-                <input class="btn btn-default" data-dismiss="modal" aria-hidden="true" type="button" value="取消">
+            <div class="modal-footer" >
+                <input  class="btn btn-default" data-dismiss="modal" aria-hidden="true" type="button" value="取消">
             </div>
 
         </div>
     </div>
 </div>
+
+<!--显示组成员的modal-->
+<div class="modal fade" id="show_group_users_modal" aria-hidden="true">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4>组用户列表：</h4>
+            </div>
+            <div class="modal-body form-inline" id="show-body">
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block js %}
@@ -99,7 +119,56 @@
                 })
                 })
             })
+
+            //显示成员组
+            $(".show_users_button").click(function(){
+                var click_object = $(this)
+                var groupid=click_object.attr("data")
+
+                $.ajax({
+                    url:"{% url 'group_user_list' %}",
+                    data:{"groupid":groupid},
+                    type:"get",
+                    success:function(ret){
+                        var show_modal = $("#show_group_users_modal");
+                        var show_body=$("#show-body")
+                        show_body.html(ret)
+                        show_modal.modal("show")
+                    }
+                })
+            })
+
         })
+
+        function delete_group_user(object){
+            var username=$(object).attr("username")
+            var groupname=$(object).attr("groupname")
+            $.ajax({
+                    url:"{% url 'del_group_user' %}",
+                    data:{"username":username,"groupname":groupname},
+                    type:"post",
+                    success:function(ret){
+                        if (ret.status == 0){
+                            $(object).parent().parent().remove()
+                        }else{
+                            swal("操作失败", res.errmsg, "error");
+
+                        }
+                    },
+                    beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                }
+            }
+
+                })
+
+
+        }
+
+
+
 
     </script>
 {% endblock %}
