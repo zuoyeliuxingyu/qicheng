@@ -22,14 +22,21 @@
                         <tr>
                             <td>{{ forloop.counter }}</td>
                             <td>{{ user.username }}</td>
-                            <td>{{ user.is_active }}</td>
+
+                            <td class="status">
+                            {% if user.is_active %}
+                                <span class="glyphicon glyphicon-ok-circle text-success"></span>正常
+                            {% else %}
+                                <span class="glyphicon glyphicon-warning-sign text-warning"></span>禁止
+                            {% endif %}
+
+
+                            </td>
                             <td><button type="button" class="btn btn-danger btn-sm del_group delete_group_user" groupname="{{ group_name }}" username="{{ user.username }}" onclick=delete_group_user(this)>删除</button></td>
                         </tr>
                     {% endfor %}
                     </tbody>
                  </table>
-
-
 
             </div>
             <div class="modal-footer">

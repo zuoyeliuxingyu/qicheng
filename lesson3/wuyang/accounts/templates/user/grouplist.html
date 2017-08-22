@@ -114,7 +114,6 @@
                     type:"get",
                     success:function(ret){
                         $('#create_group').after(ret)
-
                         var show_modal = $("#show_group_users_modal")
                         show_modal.modal("show")
                     }
@@ -129,7 +128,7 @@
             $.ajax({
                     url:"{% url 'del_group_user' %}",
                     data:{"username":username,"groupname":groupname},
-                    type:"post",
+                    type:"delete",
                     success:function(ret){
                         if (ret.status == 0){
                             $(object).parent().parent().remove()

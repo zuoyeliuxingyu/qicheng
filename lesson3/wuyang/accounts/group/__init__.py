@@ -1,6 +1,6 @@
 from django.views.generic import ListView, View,TemplateView
 from django.contrib.auth.models import Group, User
-from django.http import JsonResponse
+from django.http import JsonResponse,QueryDict
 from django.db import IntegrityError
 
 
@@ -63,10 +63,11 @@ class GroupUserListView(TemplateView):
 
 # 删除指定组的用户
 class DelGroupUserView(View):
-    def post(self,request):
+    def delete(self,request):
         ret = {"status": 0}
-        username = request.POST.get("username")
-        groupname = request.POST.get("groupname")
+        data = QueryDict(request.body)
+        username = data.get("username")
+        groupname = data.get("groupname")
 
         if username and groupname:
             try:
