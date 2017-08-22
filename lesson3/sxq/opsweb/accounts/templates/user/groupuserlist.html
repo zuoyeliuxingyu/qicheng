@@ -43,7 +43,9 @@
                     if (res.status != 0){
                         swal("操作失败", res.errmsg, "error")
                     }else{
-                        swal("操作成功", '', "success")
+
+//                        swal("操作成功", '', "success");
+                        window.location.reload();
                     }},
                     beforeSend: function (xhr, settings) {
                          var csrftoken = getCookie('csrftoken');
@@ -52,8 +54,9 @@
                          }
                     }
             });
-            window.location.reload();
-        })
+
+        });
+
     });
 
 
