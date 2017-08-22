@@ -1,4 +1,14 @@
- <table  class="table table-striped">
+<!--显示组成员的modal-->
+<div class="modal fade" id="show_group_users_modal" aria-hidden="true">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+
+            <div class="modal-header" id="group-name-title">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4>{{ group_name }}组用户列表：</h4>
+            </div>
+            <div class="modal-body form-inline" id="show-body">
+                 <table  class="table table-striped">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -17,6 +27,18 @@
                         </tr>
                     {% endfor %}
                     </tbody>
-</table>
+                 </table>
+
+
+
+            </div>
+            <div class="modal-footer">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 

@@ -101,3 +101,7 @@ class ModifyUserGroupView(View):
         user_obj.groups.add(group_obj)
         return JsonResponse(ret)
 
+    def delete(self,request):
+        ret = {"status":0}
+        data = QueryDict(request.body)
+        return JsonResponse(ret)

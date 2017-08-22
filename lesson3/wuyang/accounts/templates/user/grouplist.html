@@ -48,24 +48,7 @@
     </div>
 </div>
 
-<!--显示组成员的modal-->
-<div class="modal fade" id="show_group_users_modal" aria-hidden="true">
-	<div class="modal-dialog">
-	    <div class="modal-content">
 
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">×</button>
-                <h4>组用户列表：</h4>
-            </div>
-            <div class="modal-body form-inline" id="show-body">
-            </div>
-            <div class="modal-footer">
-
-            </div>
-
-        </div>
-    </div>
-</div>
 
 {% endblock %}
 
@@ -124,15 +107,15 @@
             $(".show_users_button").click(function(){
                 var click_object = $(this)
                 var groupid=click_object.attr("data")
-
+                console.log(groupid)
                 $.ajax({
                     url:"{% url 'group_user_list' %}",
                     data:{"groupid":groupid},
                     type:"get",
                     success:function(ret){
-                        var show_modal = $("#show_group_users_modal");
-                        var show_body=$("#show-body")
-                        show_body.html(ret)
+                        $('#create_group').after(ret)
+
+                        var show_modal = $("#show_group_users_modal")
                         show_modal.modal("show")
                     }
                 })
