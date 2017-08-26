@@ -24,8 +24,6 @@ class UserListView(LoginRequiredMixin, ListView):
     before_num = 7
     after_num = 8
 
-
-
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
         context["page_range"]  = self.get_pagerange(context["page_obj"])
