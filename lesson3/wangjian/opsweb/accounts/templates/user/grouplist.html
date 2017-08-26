@@ -1,0 +1,199 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+    <table class="table table-striped">
+        <caption>
+            <button type="button", class="btn btn-default" id="add_group">创建用户组</button>
+        </caption>
+        <tr>
+            <th>#</th>
+            <th>组名</th>
+            <th>操作</th>
+        </tr>
+        {% for group_obj in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ group_obj.name }}</td>
+                <td>
+                    <a type="button" class="btn btn-primary btn-sm show_group_users" data='{"gid": "{{ group_obj.id }}", "groupname": "{{ group_obj.name }}"}' >成员列表</a>
+                    <button type="button" class="btn btn-success btn-sm" >查看权限</button>
+                    <a  class="btn btn-info btn-sm" href="#">修改权限</a>
+                    <button type="button" class="btn btn-danger btn-sm del_group" groupid="{{ group.id }}">删除</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{# 添加用户组的modal框 #}
+    <div class="modal fade" id="create_group" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4>添加group</h4>
+                </div>
+                <div class="modal-body form-inline">
+                    <div class="form-group">
+                        <label for="exampleInputName2">用户组：</label>
+                        <input type="text" class="form-control" id="form_groupname" placeholder="请输入用户组名称"/>
+                    </div>
+                    <button class="btn btn-primary" id="create_group_btn">提交</button>
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-default" data-dismiss="modal" aria-hidden="true" type="button" value="取消">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="modal_show_group_users_list" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                    <h4>用户组名: <span id="modal_show_group_users_list_title"></span></h4>
+                </div>
+
+                <div class="modal-body form-inline" id="modal_show_group_users_content_list">
+
+                </div>
+                <div class="modal-footer">
+                    <input class="btn btn-primary" data-dismiss="modal" aria-hidden="true" type="button" value="确定">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            //创建用户组
+            $("#add_group").click(function(){
+                var create_group_modal = $("#create_group");
+                create_group_modal.modal("show");
+
+                $("#create_group_btn").click(function(){
+                    var form_groupname_input = $("#form_groupname");
+                    var group_name = form_groupname_input.val();
+                    form_groupname_input.val("");
+
+
+                    if (group_name == ""){
+                        swal("添加失败", "用户组名不能为空", "error");
+                        return false
+                    }
+                    create_group_modal.modal("hide");
+                    $.ajax({
+                    url: "{% url 'group_create' %}",
+                    type: "post",
+                    data: {"name": group_name},
+                    success: function (res) {
+                        if (res.status == 0){
+                            swal({
+                                "title": "用户组添加成功",
+                                "text": "",
+                                "type": "success"
+                            }, function(){
+                                setTimeout(function(){
+                                    window.location.reload();
+                                },100)
+
+                            });
+                        }else{
+                            swal("操作失败", res.errmsg, "error");
+
+                        }
+
+                    },
+                    beforeSend: function (xhr, settings) {
+                        var csrftoken = getCookie('csrftoken');
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                        }
+                    }
+                })
+                })
+            })
+        });
+    //查看组类成员
+{#            $(".show_group_users").click(function () {#}
+{#                var data = JSON.parse($(this).attr('data'));#}
+{#                var groupid = data.gid#}
+{#//                console.log(data)#}
+{#                $.get("/accounts/group/", {"gid": groupid},function (res) {#}
+{#                    var html = '<table class="table table-striped">';#}
+{#                    $.each(res, function (n, obj) {#}
+{#                        html += '<tr>';#}
+{#                        html += '<td>'+obj.name+'</td>';#}
+{#                        html += '<td>'+obj.username+'</td>';#}
+{#                        html += '<td>'+obj.email+'</td>';#}
+{#                        html += '<td><button class="btn btn-danger btn-xs del_group_user" data="'+obj.id+'">删除</button></td>';#}
+{#                        html += '</tr>'#}
+{#                    });#}
+{#                    html += '</table>';#}
+{#                    $("#modal_show_group_users_list_title").html(data.groupname);#}
+{#                    $("#modal_show_group_users_content_list").html(html);#}
+{#                    $("#modal_show_group_users_list").modal("show");#}
+{#                    $(".del_group_user").click(function () {#}
+{#                        var click_obj = $(this);#}
+{#                        var userid = click_obj.attr('data');#}
+{#                        $.ajax({#}
+{#                            url:"/accounts/group/",#}
+{#                            type: "DELETE",#}
+{#                            data: {"groupid": groupid, "userid": userid},#}
+{#                            datatype: "json",#}
+{#                            success: function (res) {#}
+{#                                if (res.status == 0){#}
+{#                                    click_obj.parents("tr").remove();#}
+{#                                    swal("操作成功", "", "success")#}
+{#                                }else {#}
+{#                                    swal("操作失败", res.errmsg, "error")#}
+{#                                }#}
+{#                            }#}
+{#                        })#}
+{#                    })#}
+{#                });#}
+{##}
+{#            })#}
+
+        function Userlist(gid){
+            var group_users_url = "{% url 'group_userlist' %}";
+            var modal_show_group_users_list = $("#modal_show_group_users_list");
+            modal_show_group_users_list.modal("show");
+            console.log();
+            $.get(group_users_url, {'gid': gid}, function(res){
+                if (res.status != 0){
+                    swal("操作失败", res.errmsg, "error")
+                } else {
+                    var html = '<div class="col-xs-8"><h4>用户名</h4></div>';
+                    html += '<div class="col-xs-4"><h4>操作</h4></div>';
+                    $.each(res.users_list, function(index, value){
+                        html += '<div class="row" style="margin-bottom: 6px">';
+                        html += '<div class="col-xs-8"><h4>'+ value.username +'</h4></div>';
+                        html += '<div class="col-xs-4"><button type="button" class="btn btn-danger btn-sm del_member" uid="'+ value.id +'" gid="' + gid + '">删除</button></div>';
+                        html += '</div>'
+                    });
+                    $("#modal_show_group_users_content_list").html(html)
+                }
+            })
+        }
+        $(".show_group_users").click(function(){
+            var data = JSON.parse($(this).attr('data'));
+            var gid = data.gid;
+            console.log(data)
+            Userlist(gid)
+
+        })
+
+
+    </script>
+{% endblock %}
