@@ -43,7 +43,6 @@ class GroupUserView(View):
 
         if group_obj:
             user_obj = group_obj.user_set.all()
-        print(user_obj, '----------------------')
 
         return render(request, "accounts/memberlist.html", {"user_obj": user_obj, "current_group": group_obj})
 
