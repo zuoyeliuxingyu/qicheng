@@ -18,12 +18,12 @@
     <thead>
         <tr>
 	   <th>#</th>
-           <th>机房名称</th>
-           <th>机房中文名</th>
-           <th>地址</th>
-           <th>电话</th>
-           <th>邮箱</th>
-	   <th>联系人</th>
+           <th>idc名称(字母简称)</th>
+           <th>中文名</th>
+           <th>详细地址</th>
+           <th>联系人姓名</th>
+           <th>联系电话</th>
+           <th>联系邮箱</th>
         </tr>
     </thead>
 
@@ -34,9 +34,9 @@
           <td>{{ idc.name }}</td>
           <td>{{ idc.idc_name }}</td>
           <td>{{ idc.address }}</td>
+          <td>{{ idc.username }}</td>
           <td>{{ idc.phone }}</td>
           <td>{{ idc.email }}</td>
-          <td>{{ idc.username }}</td>
         </tr>
         {% endfor %}
    </tbody>
