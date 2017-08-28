@@ -43,7 +43,6 @@
             <div class="modal-footer" >
                 <input  class="btn btn-default" data-dismiss="modal" aria-hidden="true" type="button" value="取消">
             </div>
-
         </div>
     </div>
 </div>
@@ -127,8 +126,9 @@
             var groupname=$(object).attr("groupname")
             $.ajax({
                     url:"{% url 'del_group_user' %}",
+
                     data:{"username":username,"groupname":groupname},
-                    type:"delete",
+                    type:"DELETE",
                     success:function(ret){
                         if (ret.status == 0){
                             $(object).parent().parent().remove()
@@ -138,11 +138,11 @@
                         }
                     },
                     beforeSend: function (xhr, settings) {
-                var csrftoken = getCookie('csrftoken');
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                }
-            }
+                        var csrftoken = getCookie('csrftoken');
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                        }
+                    }
 
                 })
 
