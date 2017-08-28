@@ -1,0 +1,87 @@
+{% extends "public/layout.html" %}
+
+
+
+{% block body %}
+<table  class="table table-striped">
+    <caption>
+        <form class="form-inline">
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" name="search_name" value="{{ search_name }}" class="form-control" >
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">机房名搜索</button>
+        </form>
+    </caption>
+
+    <thead>
+        <tr>
+	   <th>#</th>
+           <th>机房名称</th>
+           <th>机房中文名</th>
+           <th>地址</th>
+           <th>电话</th>
+           <th>邮箱</th>
+	   <th>联系人</th>
+        </tr>
+    </thead>
+
+   <tbody>
+        {% for idc in object_list  %}
+        <tr>
+          <td>{{ forloop.counter}}</td>
+          <td>{{ idc.name }}</td>
+          <td>{{ idc.idc_name }}</td>
+          <td>{{ idc.address }}</td>
+          <td>{{ idc.phone }}</td>
+          <td>{{ idc.email }}</td>
+          <td>{{ idc.username }}</td>
+        </tr>
+        {% endfor %}
+   </tbody>
+</table>
+
+
+<div class="panel-default">
+        <center>
+                <ul class="pagination">
+                        <li><a href="{{ request.path }}?page=1{{ search_data }}">首页</a></li>
+                                {% if page_obj.has_previous %}
+					<li><a href="{{ request.path}}?page={{ page_obj.previous_page_number  }}{{ search_data }}">上一页</a></li>
+                                {% else %}
+                                        <li class="previous disabled"><a>上一页</a></li>
+				{% endif %}	
+				{% for page_number in page_range %}
+                                   <li><a href="{{ request.path }}?page={{ page_number }}{{ search_data }}">{{ page_number }}</a></li>
+                                {% endfor %}
+				{% if page_obj.has_next %}	
+                                   <li><a href="{{ request.path}}?page={{ page_obj.next_page_number }}{{ search_data }}">下一页</a></li>
+                                {% else %}
+                                    <li class="previous disabled"><a>下一页</a></li>
+				{% endif %}
+                        <li><a href="{{ request.path}}?page={{ paginator.num_pages }}{{ search_data }}">末页</a></li>
+                </ul>
+        </center>
+</div>
+
+
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+{% endblock %}

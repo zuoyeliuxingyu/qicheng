@@ -26,16 +26,6 @@ class UserListView(LoginRequiredMixin,ListView):
         context = super(UserListView, self).get_context_data(**kwargs)
 
         # 当前页  的前7条
-        """
-        current_index = context['page_obj'].number
-        start = current_index - 3
-        end = current_index + 3
-        if start <= 0:
-            start = 1
-        if end > context['paginator'].num_pages:
-            end = context['paginator'].num_pages
-        context['page_range'] = range(start, end)
-        """
         context['page_range'] = self.get_pagerange(context['page_obj'])
         # 处理搜索条件
         search_data = self.request.GET.copy()
