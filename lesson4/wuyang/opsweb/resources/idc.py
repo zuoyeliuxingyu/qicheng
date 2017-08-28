@@ -17,15 +17,23 @@ class CreateIdcView(TemplateView):
         print(name,idc_name,address,username,phone,email)
         if name and idc_name and address and username and phone and email:
 
-            
-            data = {"name":name,"idc_name":idc_name,"address":address,"username":username,"phone":phone,"email":email}
             try:
-                idc = Idc(**data)
-                idc.save()
-            except Exception as e:
-                print(e)
-                errmsg = "保存idc数据发生异常"
+                has_idc = Idc.object.filter(name=name)
+            except:
+                has_idc = None
+            if has_idc:
+                errmsg = "该机房名已存在，请更换"
                 return redirect("error",next="idc_add",msg=errmsg)
+            else:
+            
+                data = {"name":name,"idc_name":idc_name,"address":address,"username":username,"phone":phone,"email":email}
+                try:
+                    idc = Idc(**data)
+                    idc.save()
+                except Exception as e:
+                    print(e)
+                    errmsg = "保存idc数据发生异常"
+                    return redirect("error",next="idc_add",msg=errmsg)
         else:
             errmsg = "name,idc_name,address,username,phone,email不可以为空"
             return redirect("error",next="idc_add",msg=errmsg)
