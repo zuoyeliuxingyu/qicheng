@@ -1,0 +1,70 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+<table class="table table-striped table-bordered">
+    <caption>
+        <a type="button" class="btn btn-primary btn-sm" href="{% url 'idc_add' %}">添加IDC</a>
+    </caption>
+    <thead>
+        <tr>
+           <th>机房简称</th>
+           <th>机房名</th>
+           <th>联系人</th>
+           <th>邮箱</th>
+           <th>电话</th>
+           <th>详细地址</th>
+           <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for idc in idc_obj %}
+        <tr>
+            <td>{{ idc.name }}</td>
+            <td>{{ idc.idc_name }}</td>
+            <td>{{ idc.username }}</td>
+            <td>{{ idc.email }}</td>
+            <td>{{ idc.phone }}</td>
+            <td>{{ idc.address }}</td>
+            <td>
+                <button type="button" class="btn btn-sm btn-danger delete" data="{{ idc.name }}">删除</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block js %}
+    <script>
+    $(function(){
+        $(".delete").click(function(){
+            var click_obj = $(this)
+            var uid = click_obj.attr("data");
+            var gid = "{{ gid }}";
+
+            $.ajax({
+                url: "{% url 'user_modify_group' %}",
+                type: "delete",
+                data: {"uid": uid, "gid":gid},
+                success: function (res) {
+                    if (res.status != 0){
+                        swal("操作失败", res.errmsg, "error")
+                    }else{
+                        click_obj.parents("tr").remove();
+                        swal("操作成功", '', "success")
+                    }
+                },
+                beforeSend: function (xhr, settings) {
+                    var csrftoken = getCookie('csrftoken');
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+            });
+
+        })
+    })
+
+    </script>
+
+{% endblock %}
