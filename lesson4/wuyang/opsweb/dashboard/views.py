@@ -25,7 +25,6 @@ def userdetail(request, *args, **kwargs):
 
 class SuccessView(TemplateView):
     template_name = "public/success.html"
-
     def get_context_data(self, **kwargs):
         context = super(SuccessView, self).get_context_data(**kwargs)
         success_name = self.kwargs.get("next", "")
@@ -35,7 +34,6 @@ class SuccessView(TemplateView):
             next_url = reverse(success_name)
         except:
             pass
-
         context['next_url'] = next_url
         return context
 

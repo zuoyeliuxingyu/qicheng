@@ -19,10 +19,16 @@
 {% block js %}
     <script>
         var next_url = "{{ next_url }}";
+        console.log(next_url)
         $(function(){
             setTimeout(function(){
-                window.location.href = next_url;
-            }, 800)
+                if(next_url==""){
+			window.location.href = {% url "index" %}
+		}
+		else{
+                        window.location.href = next_url;
+               }
+            }, 1800)
 
         })
     </script>
