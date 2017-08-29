@@ -1,0 +1,33 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+    <table class="table table-striped">
+        <caption>
+           <p>IDC列表</p>
+        </caption>
+        <tr>
+            <th>#</th>
+            <th>name</th>
+            <th>idc_name</th>
+            <th>address</th>
+            <th>phone</th>
+            <th>email</th>
+            <th>username</th>
+            <th>操作</th>
+        </tr>
+        {% for group_obj in idclist %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ group_obj.name }}</td>
+                <td>{{ group_obj.idc_name }}</td>
+                <td>{{ group_obj.address }}</td>
+                <td>{{ group_obj.phone }}</td>
+                <td>{{ group_obj.email }}</td>
+                <td>{{ group_obj.username }}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm del_idc" idc_id="{{ group_obj.id }}">删除</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
