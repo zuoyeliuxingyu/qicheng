@@ -31,3 +31,39 @@
         {% endfor %}
     </table>
 {% endblock %}
+{% block js %}
+    <script>
+    $(function () {
+        $(".del_idc").click(function () {
+            var idcid = $(this).attr("idc_id");
+            $.ajax({
+                url: "{% url 'idc_delete' %}",
+                type: "delete",
+                data: {"idcid": idcid},
+                success: function (res) {
+                       if (res.status == 0) {
+                           swal({
+                               "title": "删除成功",
+                               "text": "",
+                               "type": "success"
+                           }, function () {
+                               setTimeout(function () {
+                                   window.location.reload();
+                               }, 100)
+                           });
+                       } else {
+                           swal("删除失败", res.errmsg, "error");
+                       }
+                },
+                beforeSend: function (xhr, settings) {
+                    var csrftoken = getCookie('csrftoken');
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+            });
+        })
+
+    })
+    </script>
+{% endblock %}
