@@ -2,6 +2,8 @@ from django.views.generic import TemplateView,ListView
 from django.shortcuts import redirect, reverse
 from django.http import HttpResponse
 from .models import Idc
+import logging
+
 
 class CreateIdcView(TemplateView):
     template_name = "idc/add_idc.html"
@@ -62,14 +64,16 @@ class ListIdcView(ListView):
 
     before_page=3
     after_page=3
-
-
+    
     def get_queryset(self):
         query_set = super(ListIdcView,self).get_queryset()
         search_name = self.request.GET.get("search_name",None)
+        logger = logging.getLogger(__name__)
+        logger.error('Something went wrong!')
         if search_name:
            try:
                query_set = query_set.filter(name__icontains=search_name)   
+               #logger.error('wuyang test logging!')
            except Exception as e:
                print(e)
                pass

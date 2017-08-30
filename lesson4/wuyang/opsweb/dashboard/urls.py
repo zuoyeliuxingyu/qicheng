@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
 
     # myself test
-    url(r'^mysuccess/',mytest.SuccessView.as_view(),name='mysuccess'),
+    url(r'^mysuccess/(?P<mynext>[\s\S]*)/$',mytest.SuccessView.as_view(),name='mysuccess'),
 
 
 
