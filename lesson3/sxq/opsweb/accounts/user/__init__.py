@@ -102,7 +102,7 @@ class ModifyUserGroup(View):
 
         uid = data.get("uid", "")
         gid = data.get("gid", "")
-        print(data)
+        # print(data)
 
         try:
             user_obj = User.objects.get(pk=uid)
@@ -116,7 +116,10 @@ class ModifyUserGroup(View):
             ret["status"] = 1
             ret["errmsg"] = "Group is not exist!"
 
+        #1.通过用户删所在的组
         user_obj.groups.remove(group_obj)
+        #2.通过组删除用户
+        # group_obj.user_set.remove(user_obj)
         return JsonResponse(ret)
 
 
