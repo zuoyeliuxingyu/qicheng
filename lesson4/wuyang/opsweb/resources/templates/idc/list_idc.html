@@ -24,6 +24,8 @@
            <th>联系人姓名</th>
            <th>联系电话</th>
            <th>联系邮箱</th>
+           <th> 操作 </th>
+
         </tr>
     </thead>
 
@@ -37,6 +39,15 @@
           <td>{{ idc.username }}</td>
           <td>{{ idc.phone }}</td>
           <td>{{ idc.email }}</td>
+          
+          <td>
+             <div class="btn-group" role="group">
+  		<button  type="button" class="btn btn-warning change_idc">修改</button>
+  		<button  type="button" class="btn btn-danger delete_idc">删除</button>
+	     </div>
+          </td>
+
+
         </tr>
         {% endfor %}
    </tbody>
@@ -72,7 +83,67 @@
 {% block js %}
 <script>
 
+$(function(){
+  $(".delete_idc").click(function(){
+      var nice=$(this)
+      //console.log(nice.parents('tr').children('td').eq(1).text())  
+      name = nice.parents('tr').children('td').eq(1).text()
+      console.log(name)
+      swal({  
+        title: "确定要删除吗?",  
+        text: "删除后无法还原该用户信息",  
+        type: "warning",  
+        showCancelButton: true,  
+        confirmButtonColor: "#DD6B55",  
+        confirmButtonText: "Yes, 删掉!",  
+        cancelButtonText: "No, 考虑一下!",  
+        closeOnConfirm: false,  
+        closeOnCancel: true },  
+        function (isConfirm) { 
+          //console.log(isConfirm) 
+          if (isConfirm) {
+            $.ajax({
+              url: "{% url 'idc_delete' %}",
+              type: "delete",
+              data: {"name":name},
+              success: function(res){
+                 if(res.status==0){
+                   swal({
+                    "title":"Deleted!",
+                    "text":"删除成功",
+                    "type": "success",
+                    },function(){
+                       setTimeout(function(){
+                          window.location.reload();
+                        },1000)
+                    })
+                 }                   
+                 else{
+                   swal(res.errmsg, "删除发生异常", "error");               
+                 }
+              },
 
+
+              beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                }
+              },
+
+            })
+
+          }
+     }); 
+
+
+    })
+
+
+
+
+
+})
 
 
 

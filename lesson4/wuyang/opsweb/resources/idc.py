@@ -1,6 +1,6 @@
-from django.views.generic import TemplateView,ListView
+from django.views.generic import TemplateView,ListView,View
 from django.shortcuts import redirect, reverse
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse,QueryDict
 from .models import Idc
 import logging
 
@@ -60,7 +60,7 @@ class ListIdcView(ListView):
     model = Idc
     
     paginate_by=10
-    ordering = "id"
+    ordering = "-id" # 逆排序
 
     before_page=3
     after_page=3
@@ -68,8 +68,8 @@ class ListIdcView(ListView):
     def get_queryset(self):
         query_set = super(ListIdcView,self).get_queryset()
         search_name = self.request.GET.get("search_name",None)
-        logger = logging.getLogger(__name__)
-        logger.error('Something went wrong!')
+        #logger = logging.getLogger(__name__)
+        #logger.error('Something went wrong!')
         if search_name:
            try:
                query_set = query_set.filter(name__icontains=search_name)   
@@ -121,5 +121,39 @@ class ListIdcView(ListView):
 
         #print(range(start_page,end_page))
         return range(start_page,end_page)
+
+class DeleteIdcView(View):
+    def delete(self,request):
+        res={"status":0}
+        data=QueryDict(request.body) 
+        name=data.get("name","")
+        print(name)
+        if name:
+            try:
+                idc = Idc.objects.get(name=name).delete() 
+            except Exception as e:            
+                print(e)
+                res["status"]=1
+                res["errmsg"]="用户不存在或删除异常"
+                return JsonResponse(res)
+
+
+        else:
+            res["status"]=1
+            res["errmsg"]="要删除的用户名未获取到"
+
+
+
+
+        return JsonResponse(res)
+
+
+
+
+
+
+
+
+
 
 
