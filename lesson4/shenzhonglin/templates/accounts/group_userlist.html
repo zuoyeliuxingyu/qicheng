@@ -1,0 +1,72 @@
+{% extends 'public/layout.html' %}
+
+{% block body %}
+<table class="table table-bordered">
+    <div>
+        <a class="btn btn-default btn-sm" href="{% url 'group_list' %}">返回</a>
+        <span class="btn btn-info btn-sm">当前属组：{{ group_boj.name }}</span>
+    </div>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>username</th>
+            <th>email</th>
+            <th>status</th>
+            <th>operate</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user_line in object_list %}
+            <tr>
+                <td>{{ forloop.counter}}</td>
+                <td>{{ user_line.username }}</td>
+                <td>{{ user_line.email}}</td>
+
+                <td class="status">
+                    {% if user_line.is_active %}
+                        <span class="glyphicon glyphicon-ok-circle text-success"  style="color: green"></span>正常
+                    {% else %}
+                        <span class="glyphicon glyphicon-remove-circle text-warning" style="color: red"></span>禁止
+                    {% endif %}
+                </td>
+
+                <td>
+                    <button type="button" class="btn btn-sm btn-danger delete" data="{{ user_line.id }}">从组内删除</button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block js %}
+<script>
+$(function () {
+    $(".delete").click(function () {
+        var click_obj = $(this);
+        var uid = click_obj.attr("data");
+        var gid = "{{ gid }}";
+        $.ajax({
+            url: "{% url 'modify_user_group' %}",
+            type: "delete",
+            data: {"uid": uid, "gid": gid},
+            success: function (res) {
+                if (res.status !== 0){
+                    swal("操作失败", res.errmsg, "error");
+                }else{
+                    click_obj.parents("tr").remove();
+                    swal("操作成功", "", "success");
+                }
+            },
+            beforeSend: function (xhr, settings) {
+                    var csrftoken = getCookie('csrftoken');
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+        })
+    })
+})
+</script>
+
+{% endblock %}
