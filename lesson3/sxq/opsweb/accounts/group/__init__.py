@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group
 from django.views.generic import ListView, View, TemplateView
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, Http404
 from django.db import IntegrityError
 
 class GroupListView(ListView):
@@ -33,8 +33,8 @@ class GroupUserListView(TemplateView):
         gid = self.request.GET.get("gid", "")
         try:
             g = Group.objects.get(pk=gid)
-        except:
-            pass
+        except Group.DoesNotExist:
+            raise Http404("page does not exist!!!")
 
         users = g.user_set.all()
         context['group_user_list'] = list(users.values("id", "username", "email"))

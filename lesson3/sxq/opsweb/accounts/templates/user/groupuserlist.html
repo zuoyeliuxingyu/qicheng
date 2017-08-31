@@ -43,7 +43,8 @@
                     if (res.status != 0){
                         swal("操作失败", res.errmsg, "error")
                     }else{
-
+                        // 通过删除tr标签删除
+                        // $(this).parents('tr').remove();
 //                        swal("操作成功", '', "success");
                         window.location.reload();
                     }},

@@ -1,0 +1,89 @@
+{% extends "public/layout.html" %}
+
+{% block breadcrumb %}
+    <li><a href="{% url 'group_list' %}">用户组管理</a><span class="divider"></span></li>
+    <li class="active">用户列表</li>
+{% endblock %}
+
+{% block body %}
+    <table class="table table-striped">
+        <caption>
+            <b>用户组{{ groupname }}的用户列表</b>
+        </caption>
+
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>用户名</th>
+                <th>邮箱</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+         <tbody>
+            {% for user_obj in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user_obj.username }}</td>
+                <td>{{ user_obj.email }}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm del_group" data="{{ user_obj.username }}">删除</button>
+                </td>
+            </tr>
+            {% endfor %}
+         </tbody>
+    </table>
+
+{% endblock %}
+{% block js %}
+<script>
+   $(function(){
+       //点击删除
+       $(".del_group").click(function () {
+           var get_usergroup = $(this).attr("data");
+           var user_group_url = "{% url 'user_modify_group' %}";
+           var get_groupname = "{{ groupname }}";
+           console.log(get_groupname);
+           //触发swal插件，询问是否删除
+           swal({
+              title: "你确定?",
+              text: "请确认要删除"+get_groupname+"用户组里的"+get_usergroup+"用户吗？",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#DD6B55",
+              confirmButtonText: "是的，删除它",
+               cancelButtonText: "取消",
+              closeOnConfirm: false
+            }, function(){
+               $.ajax({
+                   url: user_group_url,
+                   type: "delete",
+                   data: {"username": get_usergroup, "groupname": get_groupname},
+                   success: function (res) {
+                       if (res.status == 0) {
+                           swal({
+                               "title": "删除成功",
+                               "text": "",
+                               "type": "success"
+                           }, function () {
+                               setTimeout(function () {
+                                   window.location.reload();
+                               }, 100)
+                           });
+                       } else {
+                           swal("删除失败", res.errmsg, "error");
+                       }
+                   },
+                   beforeSend: function (xhr, settings) {
+                    var csrftoken = getCookie('csrftoken');
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+                });
+                return false
+                });
+            });
+       })
+
+</script>
+{% endblock %}
