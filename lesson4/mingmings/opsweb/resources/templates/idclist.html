@@ -1,0 +1,80 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+    <table class="table table-striped">
+        <caption>
+            {# <button type="button", class="btn btn-default" id="add_idc">创建IDC</button> #}
+            <a href="{% url 'idc_add' %}"><button class="btn btn-primary" type="button">添加IDC</button></a>
+        </caption>
+        <tr>
+            <th>ID</th>
+            <th>name</th>
+            <th>idc_name</th>
+            <th>phone</th>
+            <th>email</th>
+            <th>操作</th>
+        </tr>
+
+        {% for idc_obj in object_list %}
+        <tr>
+            <th>{{ idc_obj.id }}</th>
+            <th>{{ idc_obj.name }}</th>
+            <th>{{ idc_obj.idc_name }}</th>
+            <th>{{ idc_obj.phone }}</th>
+            <th>{{ idc_obj.email }}</th>
+            <th>
+                <a type="button" class="btn btn-primary btn-sm" href="#" >详情</a>
+                {# <button type="button" class="btn btn-success btn-sm" >查看权限</button> #}
+                <a  class="btn btn-info btn-sm" href="#">修改</a>
+                <button type="button" class="btn btn-danger btn-sm delete_idc" data="{{ idc_obj.id }}">删除</button>
+            </th>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+    // 删除 idc 按钮事件
+    $(".delete_idc").click(function() {
+        /* 获取按钮的 data 属性，利用 ajax 传给后端处理 */
+        var obj = $(this);
+        var data = obj.attr('data');
+        // console.log(data);
+        $.ajax({
+            url: "{% url 'idc_delete' %}",
+            type: 'POST',
+            // dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+            data: {'idc_id': data},
+            success: function(res){
+                if(res.status != 0){
+                    swal("操作失败", res.errmsg, "error");
+                }else{
+                    // swal("操作成功", '', "success");
+                    swal({
+                      title: '确认删除么?',
+                      text: "删除此条记录后不可恢复!",
+                      type: 'warning',
+                      showCancelButton: true,
+                      confirmCancelText: "取消",
+                      confirmButtonColor: '#3085d6',
+                      cancelButtonColor: '#d33',
+                      confirmButtonText: "确定删除!",
+                      // confirmButtonText: 'Yes!'
+                    }), function (res) {
+                        swal('已删除!', '', 'success')
+                    }
+                }
+            },
+            beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken');
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                }
+        });
+    });
+</script>
+{% endblock %}
