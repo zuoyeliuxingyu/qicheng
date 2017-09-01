@@ -1,0 +1,28 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+    <table class="table table-striped">
+        <tr>
+            <th>id</th>
+            <th>idc名称</th>
+            <th>idc名称（中文名）</th>
+            <th>详细地址</th>
+            <th>联系人姓名</th>
+            <th>联系电话</th>
+            <th>联系邮件地址</th>
+            <th>操作</th>
+        </tr>
+        {% for idc_obj in object_list %}
+            <tr>
+                <td>{{ idc_obj.id }}</td>
+                <td>{{ idc_obj.name }}</td>
+                <td>{{ idc_obj.idc_name }}</td>
+                <td>{{ idc_obj.address }}</td>
+                <td>{{ idc_obj.username }}</td>
+                <td>{{ idc_obj.phone }}</td>
+                <td>{{ idc_obj.email }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
