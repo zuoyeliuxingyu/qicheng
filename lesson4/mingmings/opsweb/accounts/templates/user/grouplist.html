@@ -50,57 +50,55 @@
 {% endblock %}
 
 {% block js %}
-    <script>
-        $(function () {
-            //创建用户组
-            $("#add_group").click(function(){
-                var create_group_modal = $("#create_group");
-                create_group_modal.modal("show");
+<script>
+    $(function () {
+        //创建用户组
+        $("#add_group").click(function(){
+            var create_group_modal = $("#create_group");
+            create_group_modal.modal("show");
 
-                $("#create_group_btn").click(function(){
-                    var form_groupname_input = $("#form_groupname");
-                    var group_name = form_groupname_input.val();
-                    form_groupname_input.val("");
+            $("#create_group_btn").click(function(){
+                var form_groupname_input = $("#form_groupname");
+                var group_name = form_groupname_input.val();
+                form_groupname_input.val("");
 
+                if (group_name == ""){
+                    swal("添加失败", "用户组名不能为空", "error");
+                    return false
+                }
+                create_group_modal.modal("hide");
 
-                    if (group_name == ""){
-                        swal("添加失败", "用户组名不能为空", "error");
-                        return false
-                    }
-                    create_group_modal.modal("hide");
+                $.ajax({
+                    url: "{% url 'group_create' %}",    // 请求 url
+                    type: "post",           // 请求类型
+                    data: {"name": group_name},     // 发送的数据
+                    success: function (res) {       // 成功返回的数据
+                        if (res.status == 0){
+                            swal({
+                                "title": "用户组添加成功",
+                                "text": "",
+                                "type": "success"
+                            }, function(){
+                                setTimeout(function(){
+                                    window.location.reload();
+                                },100)
 
-                    $.ajax({
-                        url: "{% url 'group_create' %}",    // 请求 url
-                        type: "post",           // 请求类型
-                        data: {"name": group_name},     // 发送的数据
-                        success: function (res) {       // 成功返回的数据
-                            if (res.status == 0){
-                                swal({
-                                    "title": "用户组添加成功",
-                                    "text": "",
-                                    "type": "success"
-                                }, function(){
-                                    setTimeout(function(){
-                                        window.location.reload();
-                                    },100)
+                            });
+                        }else{
+                            swal("操作失败", res.errmsg, "error");
 
-                                });
-                            }else{
-                                swal("操作失败", res.errmsg, "error");
-
-                            }
-
-                        },
-                        beforeSend: function (xhr, settings) {
-                            var csrftoken = getCookie('csrftoken');
-                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                xhr.setRequestHeader("X-CSRFToken", csrftoken)
-                            }
                         }
-                })
-                })
+
+                    },
+                    beforeSend: function (xhr, settings) {
+                        var csrftoken = getCookie('csrftoken');
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                        }
+                    }
+            })
             })
         })
-
-    </script>
+    })
+</script>
 {% endblock %}

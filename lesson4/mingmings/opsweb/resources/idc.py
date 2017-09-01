@@ -56,7 +56,7 @@ class DeleteIdcView(View):
         ret = {'status': 0}
         idc_id = request.POST.get('idc_id', '')     # 获取前端 ajax 传递过来的 idc_id
 
-        # 获取 idc_id 后进行对应的删除，如果碰到异常给予报错提示
+        # 获取 idc_id 后进行对应的删除，异常给予报错提示
         try:
             idc = Idc.objects.get(id=idc_id)
             idc.delete()
