@@ -23,7 +23,8 @@
             <th>{{ idc_obj.phone }}</th>
             <th>{{ idc_obj.email }}</th>
             <th>
-                <a type="button" class="btn btn-primary btn-sm" href="#" >详情</a>
+                {# <a type="button" class="btn btn-primary btn-sm idc_more" href="#" id="idc_more">详情</a> #}
+                <button type="button" class="btn btn-primary btn-sm idc_more" data="{{ idc_obj.id }}" id="idc_more">详情</button>
                 {# <button type="button" class="btn btn-success btn-sm" >查看权限</button> #}
                 <a  class="btn btn-info btn-sm" href="#">修改</a>
                 <button type="button" class="btn btn-danger btn-sm delete_idc" data="{{ idc_obj.id }}">删除</button>
@@ -31,12 +32,75 @@
         </tr>
 
         {% endfor %}
-
     </table>
+
+    <!-- IDC 详情模态框 -->
+    <div class="modal fade" id="modal_show_idc_more_modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <!-- 等待填充的模态框标题 -->
+                    <h4>IDC:  <span id="modal_show_idc_more_list_title"></span></h4>
+                </div>
+                <!-- 等待从后端获取数据填充的模态框内容部分 -->
+                <div class="modal-body form-inline" id="modal_show_idc_more_content_list">
+                </div>
+
+                <div class="modal-footer">
+                    <input class="btn btn-default" data-dismiss="modal" aria-hidden="true" type="button" value="取消">
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block js %}
 <script type="text/javascript">
+$(function(){
+    $(".idc_more").click(function() {
+    /* Act on the event */
+        // $("#idc_more_modal").modal("show");
+        var data = $(this).attr('data')
+        // console.log(data);
+        $.ajax({
+            url: "{% url 'idc_get' %}",
+            type: 'GET',
+            // dataType: 'default: Intelligent Guess (Other values: xml, json, script, or html)',
+            data: {"idc_id": data},
+            success: function(res){
+                // console.log("get ok");
+
+                var html = '<table class="table table-striped">';
+                html += '<tr>';
+                html += '<th>name</th>';
+                html += '<th>idc_name</th>';
+                html += '<th>address</th>';
+                html += '<th>phone</th>';
+                html += '<th>email</th>';
+                html += '<th>username</th>';
+                html += '</tr>';
+
+                html += '<tr>';
+                html += '<td>' + res.name+'</td>';
+                html += '<td>' + res.idc_name+'</td>';
+                html += '<td>' + res.address+'</td>';
+                html += '<td>' + res.phone+'</td>';
+                html += '<td>' + res.email+'</td>';
+                html += '<td>' + res.username+'</td>';
+                html += '</tr>';
+                html += '</table>';
+
+                $("#modal_show_idc_more_list_title").html(res.name);   // 填充用户组名
+                $("#modal_show_idc_more_content_list").html(html);       // 填充生成 html 内容
+                $("#modal_show_idc_more_modal").modal("show");    // 展示模态框
+
+            }
+        })
+    });
+})
+
+$(function(){
     // 删除 idc 按钮事件
     $(".delete_idc").click(function() {
         /* 获取按钮的 data 属性，利用 ajax 传给后端处理 */
@@ -92,5 +156,6 @@
                 }
         })
     })
+})
 </script>
 {% endblock %}

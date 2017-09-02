@@ -24,7 +24,8 @@ urlpatterns = [
     url(r'^group/', include([
         url(r'^$', group.GroupListView.as_view(), name='group_list'),   # 用户组 url
         url(r'create/$', group.GroupCreateView.as_view(), name='group_create'),  # 用户组创建 url
-        url(r'userlist/$', group.GroupUserList.as_view(), name='group_userlist')   # 查看组成员 url
+        url(r'userlist/$', group.GroupUserList.as_view(), name='group_userlist'),   # 查看组成员 url
+        url(r'delete/$', group.GroupDeleteView.as_view(), name='group_delete'),     # 删除用户组 url
     ])),
 
 ]
